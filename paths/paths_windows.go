@@ -5,12 +5,11 @@
 package paths
 
 import (
+	"golang.org/x/sys/windows"
 	"os"
 	"path/filepath"
 	"strings"
 	"unsafe"
-
-	"golang.org/x/sys/windows"
 )
 
 func getTokenInfo(token windows.Token, infoClass uint32) ([]byte, error) {
@@ -147,4 +146,10 @@ func ensureStateDirPerms(dirPath string) error {
 		windows.PROTECTED_DACL_SECURITY_INFORMATION
 	return windows.SetNamedSecurityInfo(dirPath, windows.SE_FILE_OBJECT, flags,
 		sids.User, sids.PrimaryGroup, dacl, nil)
+}
+
+// LegacyStateFilePath returns the legacy path to the state file when it was stored under the
+// current user's %LocalAppData%.
+func LegacyStateFilePath() string {
+	return filepath.Join(os.Getenv("LocalAppData"), "Tailscale", "server-state.conf")
 }
