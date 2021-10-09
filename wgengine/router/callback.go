@@ -15,8 +15,9 @@ import (
 // Mainly used as a shim for OSes that want to set both network and
 // DNS configuration simultaneously (iOS, android).
 type CallbackRouter struct {
-	SetBoth  func(rcfg *Config, dcfg *dns.OSConfig) error
-	SplitDNS bool
+	SetBoth         func(rcfg *Config, dcfg *dns.OSConfig) error
+	SplitDNS        bool
+	GetBaseConfigFn func() (dns.OSConfig, error)
 
 	mu   sync.Mutex    // protects all the following
 	rcfg *Config       // last applied router config
@@ -50,7 +51,7 @@ func (r *CallbackRouter) SupportsSplitDNS() bool {
 }
 
 func (r *CallbackRouter) GetBaseConfig() (dns.OSConfig, error) {
-	return dns.OSConfig{}, dns.ErrGetBaseConfigNotSupported
+	return r.GetBaseConfigFn()
 }
 
 func (r *CallbackRouter) Close() error {
