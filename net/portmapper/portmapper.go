@@ -740,7 +740,9 @@ func (c *Client) Probe(ctx context.Context) (res ProbeResult, err error) {
 					c.mu.Unlock()
 					switch pres.ResultCode {
 					case pcpCodeOK:
-						c.logf("Got PCP response: epoch: %v", pres.Epoch)
+						if VerboseLogs {
+							c.logf("Got PCP response: epoch: %v", pres.Epoch)
+						}
 						res.PCP = true
 						continue
 					case pcpCodeNotAuthorized:
@@ -756,7 +758,9 @@ func (c *Client) Probe(ctx context.Context) (res ProbeResult, err error) {
 			}
 			if pres, ok := parsePMPResponse(buf[:n]); ok {
 				if pres.OpCode == pmpOpReply|pmpOpMapPublicAddr && pres.ResultCode == pmpCodeOK {
-					c.logf("Got PMP response; IP: %v, epoch: %v", pres.PublicAddr, pres.SecondsSinceEpoch)
+					if VerboseLogs {
+						c.logf("Got PMP response; IP: %v, epoch: %v", pres.PublicAddr, pres.SecondsSinceEpoch)
+					}
 					res.PMP = true
 					c.mu.Lock()
 					c.pmpPubIP = pres.PublicAddr
