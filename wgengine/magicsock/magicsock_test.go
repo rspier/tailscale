@@ -353,7 +353,6 @@ func TestNewConn(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer conn.Close()
 	conn.SetDERPMap(stuntest.DERPMapOf(stunAddr.String()))
 	conn.SetPrivateKey(wgkey.Private(key.NewPrivate()))
 
@@ -382,6 +381,7 @@ collectEndpoints:
 			t.Fatalf("timeout with endpoints: %v", endpoints)
 		}
 	}
+	conn.Close()
 }
 
 func pickPort(t testing.TB) uint16 {

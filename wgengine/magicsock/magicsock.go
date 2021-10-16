@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"hash/fnv"
+	"log"
 	"math"
 	"math/rand"
 	"net"
@@ -2855,6 +2856,7 @@ func (c *RebindingUDPConn) WriteTo(b []byte, addr net.Addr) (int, error) {
 func newBlockForeverConn() *blockForeverConn {
 	c := new(blockForeverConn)
 	c.cond = sync.NewCond(&c.mu)
+	log.Printf("newBlockForeverConn!")
 	return c
 }
 
